@@ -4,7 +4,8 @@ import time
 
 print("Started")
 
-localIP     = socket.gethostbyname(os.environ.get("HOST","127.0.0.1"))
+#localIP     = socket.gethostbyname(os.environ.get("HOST","127.0.0.1"))
+localIP = ""
 
 localPort   = int(os.environ.get("PORT",12345))
 
