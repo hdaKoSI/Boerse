@@ -1,11 +1,12 @@
 import socket
 import os
+import time
 
+print("Started")
 
+localIP     = socket.gethostbyname(os.environ.get("HOST","127.0.0.1"))
 
-localIP     = os.environ.get("HOST")
-
-localPort   = os.environ.get("PORT")
+localPort   = int(os.environ.get("PORT",12345))
 
 bufferSize  = 1024
 
@@ -18,6 +19,8 @@ bytesToSend         = str.encode(msgFromServer)
  
 
 # Create a datagram socket
+
+print("Setting up socket with IP: {} and Port: {}".format(localIP, localPort))
 
 UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 

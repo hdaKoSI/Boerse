@@ -1,0 +1,14 @@
+version: '3.3'
+services:
+  boerse:
+    image: boerse
+    environment:
+      - PYTHONUNBUFFERED=1
+      - HOST=127.0.0.1
+      - PORT=12345
+  bank:
+    environment:
+      - PYTHONUNBUFFERED=1
+      - HOST=boerse
+      - PORT=12345
+    image: bank
