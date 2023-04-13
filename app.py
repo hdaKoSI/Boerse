@@ -7,20 +7,21 @@ import threading
 
 print("Server started")
 
+# Get stock data from csv
 def read_csv_file(file_path):
-    kuerzel = []
-    wert = []
+    stock = []
+    value = []
     with open(file_path, mode='r') as file:
         csv_reader = csv.DictReader(file)
         for row in csv_reader:
-            kuerzel.append(row['Kuerzel'])
-            wert.append(float(row['Wert']))
-    return kuerzel, wert
+            stock.append(row['stock'])
+            value.append(float(row['value']))
+    return stock, value
 
-file_path = 'vs_p1_wertpapiere.csv'
-kuerzel, wert = read_csv_file(file_path)
+file_path = 'vs_p1_stocks.csv'
+stock, value = read_csv_file(file_path)
 
-print("Loaded {} stocks".format(len(kuerzel)))
+print("Loaded {} stocks".format(len(stock)))
 
 LOCAL_IP = ""
 LOCAL_PORT = int(os.environ.get("PORT",12345))
@@ -38,8 +39,8 @@ print("UDP server up and listening")
 connected_clients = {}
 
 def send_all_prices(address):
-    for i in range(len(kuerzel)):
-        send_message(kuerzel[i] + ";" + str(wert[i]), address)
+    for i in range(len(stock)):
+        send_message(stock[i] + ";" + str(value[i]), address)
 
 def send_message(message, address):
     bytesToSend = str.encode(message)
@@ -75,12 +76,12 @@ def listen_for_datagrams():
 def change_prices():
     while True:
         # Generate a random price change and apply it to a random stock
-        wId = random.randint(0, len(kuerzel) - 1)
+        wId = random.randint(0, len(stock) - 1)
         priceChange = random.randint(-10, 10)
         if priceChange != 0:
-            wert[wId] = float(wert[wId]) + priceChange
-            print("New price for {}: {} (change: {})".format(kuerzel[wId], wert[wId], priceChange))
-            broadcast_message(kuerzel[wId] + ";" + str(wert[wId]))
+            value[wId] = float(value[wId]) + priceChange
+            print("New price for {}: {} (change: {})".format(stock[wId], value[wId], priceChange))
+            broadcast_message(stock[wId] + ";" + str(value[wId]))
 
         # Wait for a random amount of time before generating the next price change
         waitTime = random.uniform(2.0, 10.0)
