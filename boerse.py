@@ -40,7 +40,7 @@ connected_clients = {}
 
 def send_all_prices(address):
     for i in range(len(stock)):
-        send_message(stock[i] + ";" + str(value[i]), address)
+        send_message("CHANGE;"+stock[i] + ";0;" + str(value[i]), address)
 
 def send_message(message, address):
     bytesToSend = str.encode(message)
@@ -54,10 +54,10 @@ def broadcast_message(message):
 # A function that listens for incoming datagrams and sends price changes to connected clients
 def listen_for_datagrams():
     # Receive datagram and get the client's address
-    bytes_address_pair = UDPServerSocket.recvfrom(BUFFER_SIZE)
-    message = bytes_address_pair[0]
-    address = bytes_address_pair[1]
     while True:
+        bytes_address_pair = UDPServerSocket.recvfrom(BUFFER_SIZE)
+        message = bytes_address_pair[0]
+        address = bytes_address_pair[1]
 
         # If the client is not already connected, add it to the dictionary of connected clients
         if address not in connected_clients:
@@ -78,14 +78,14 @@ def change_prices():
         # Generate a random price change and apply it to a random stock
         wId = random.randint(0, len(stock) - 1)
         priceChange = random.randint(-10, 10)
+        amount = random.randint(1, 100)
         if priceChange != 0:
             value[wId] = float(value[wId]) + priceChange
-            print("New price for {}: {} (change: {})".format(stock[wId], value[wId], priceChange))
-            broadcast_message(stock[wId] + ";" + str(value[wId]))
+            print("Traded {} of {} for {} (value change: {})".format(amount, stock[wId], value[wId], priceChange))
+            broadcast_message("CHANGE;"+stock[wId] + ";"+str(amount)+";" + str(value[wId]))
 
         # Wait for a random amount of time before generating the next price change
-        waitTime = random.uniform(2.0, 10.0)
-        print("Waiting for {} seconds".format(waitTime))
+        waitTime = random.uniform(5.0, 10.0)
         time.sleep(waitTime)
 
 # Start the thread that listens for incoming datagrams

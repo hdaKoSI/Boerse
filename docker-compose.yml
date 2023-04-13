@@ -8,12 +8,27 @@ services:
     ports:
       - 12345:12345/udp
     build: ./
-  bank:
+  boerse2:
     environment:
       - PYTHONUNBUFFERED=1
       - HOST=127.0.0.1
-      - PORT=12345
+      - PORT=12000
+    ports:
+      - 12000:12000/udp
+    build: ./
+  bank:
+    environment:
+      - PYTHONUNBUFFERED=1
     network_mode: "host"
     depends_on:
       - boerse
-    build: ../bank/
+      - boerse2
+    build: ../Bank/
+  bank2:
+    environment:
+      - PYTHONUNBUFFERED=1
+    network_mode: "host"
+    depends_on:
+      - boerse
+      - boerse2
+    build: ../Bank/
